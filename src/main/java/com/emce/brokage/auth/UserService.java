@@ -11,15 +11,11 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import static com.emce.brokage.common.Messages.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    public static final String ACCESS_DENIED_FOR_USER_MSG = "You do not have permission to update the user with id %s";
-    public static final String EMAIL_ALREADY_EXISTS_MSG = "Email already exists! mail: %s";
-
-    public static final String USER_NOT_FOUND_MSG = "User not found with email %s";
-    public static final String USER_ID_NOT_FOUND_MSG = "User not found with id %s";
     private final CustomerRepository customerRepository;
 
     @Override
