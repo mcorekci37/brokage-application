@@ -6,6 +6,9 @@ import com.emce.brokage.auth.dto.RegisterRequest;
 import com.emce.brokage.auth.entity.Customer;
 import com.emce.brokage.auth.entity.Role;
 import com.emce.brokage.exception.DuplicateEmailException;
+import com.emce.brokage.token.Token;
+import com.emce.brokage.token.TokenRepository;
+import com.emce.brokage.token.TokenType;
 import com.emce.brokage.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +21,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.emce.brokage.common.Messages.*;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    public static final String TOKEN_EXPIRED_MSG = "Token is expired or invalid";
-    public static final String EMAIL_ALREADY_EXISTS_MSG = "Email already exists! mail: %s";
-    public static final String TOKEN_NOT_VALID = "Token cannot be validated";
     private final CustomerRepository customerRepository;
+    private final TokenRepository tokenRepository;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -34,7 +36,7 @@ public class AuthService {
 
 
     public AuthResponse register(RegisterRequest registerRequest) throws DataIntegrityViolationException {
-        var userCredential = Customer.builder()
+        var customer = Customer.builder()
                 .name(registerRequest.name())
                 .email(registerRequest.email())
                 .password(passwordEncoder.encode(registerRequest.password()))
@@ -42,11 +44,12 @@ public class AuthService {
                 .accountBalance(0D)
                 .build();
         try {
-            customerRepository.save(userCredential);
+            customerRepository.save(customer);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateEmailException(String.format(EMAIL_ALREADY_EXISTS_MSG, userCredential.getEmail()));
+            throw new DuplicateEmailException(String.format(EMAIL_ALREADY_EXISTS_MSG, customer.getEmail()));
         }
-        var jwtToken = jwtUtil.generateToken(userCredential);
+        var jwtToken = jwtUtil.generateToken(customer);
+        saveUserToken(customer, jwtToken);
         return AuthResponse.builder()
                 .token(jwtToken)
                 .expiresAt(jwtUtil.extractExpiration(jwtToken))
@@ -63,6 +66,7 @@ public class AuthService {
         var user = userService.loadUserByUsername(request.email());
 
         var jwtToken = jwtUtil.generateToken(user);
+        saveUserToken(user, jwtToken);
         return AuthResponse.builder()
                 .token(jwtToken)
                 .expiresAt(jwtUtil.extractExpiration(jwtToken))
@@ -81,6 +85,16 @@ public class AuthService {
             }
         }
         throw new BadCredentialsException(TOKEN_NOT_VALID);
+    }
+    private void saveUserToken(Customer customer, String jwtToken) {
+        var token = Token.builder()
+                .customer(customer)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
     }
 
 }
