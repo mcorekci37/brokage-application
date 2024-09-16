@@ -1,8 +1,6 @@
 package com.emce.brokage.balance.entity;
 
 import com.emce.brokage.auth.entity.Customer;
-import com.emce.brokage.entity.TransactionStatus;
-import com.emce.brokage.entity.TransactionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -21,6 +19,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,7 +36,7 @@ public class AccountTransaction {
     private Integer id;
     @Enumerated(EnumType.STRING)
     private TransactionType orderSide;
-    private Double amount;
+    private BigDecimal amount;
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
     @ManyToOne

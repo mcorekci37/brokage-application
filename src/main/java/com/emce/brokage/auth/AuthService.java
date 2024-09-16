@@ -41,7 +41,6 @@ public class AuthService {
                 .email(registerRequest.email())
                 .password(passwordEncoder.encode(registerRequest.password()))
                 .role(Role.USER)
-                .accountBalance(0D)
                 .build();
         try {
             customerRepository.save(customer);
