@@ -1,4 +1,4 @@
-package com.emce.brokage.entity;
+package com.emce.brokage.balance.entity;
 
 import com.emce.brokage.auth.entity.Customer;
 import jakarta.persistence.Entity;
@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -27,8 +28,8 @@ public class Asset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String assetName;
-    private Integer size;
-    private Integer usableSize;
+    private BigDecimal size;
+    private BigDecimal usableSize;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

@@ -1,6 +1,6 @@
 package com.emce.brokage.auth.entity;
 
-import com.emce.brokage.entity.Asset;
+import com.emce.brokage.balance.entity.Asset;
 import com.emce.brokage.entity.Order;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -58,8 +58,6 @@ public class Customer implements UserDetails {
     private Set<Asset> assets;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Order> orders;
-    @Column(name = "balance")
-    private Double accountBalance;
 
     @Enumerated(EnumType.STRING)
     private Role role;

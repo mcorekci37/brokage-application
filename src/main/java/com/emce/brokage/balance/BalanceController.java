@@ -2,7 +2,7 @@ package com.emce.brokage.balance;
 
 import com.emce.brokage.balance.dto.BalanceRequest;
 import com.emce.brokage.balance.dto.BalanceResponse;
-import com.emce.brokage.entity.TransactionType;
+import com.emce.brokage.balance.entity.TransactionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +36,7 @@ public class BalanceController {
             throw new InvalidParameterException("customerId in path and body doesn't match");
         }
         if (request.transactionType()!= TransactionType.WITHDRAW){
-            throw new InvalidParameterException("You can only deposit from this endpoint");
+            throw new InvalidParameterException("You can only withdraw from this endpoint");
         }
         return ResponseEntity.ok(balanceService.processTransaction(request, TransactionType.WITHDRAW));
     }
