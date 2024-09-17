@@ -1,7 +1,6 @@
 package com.emce.brokage.security;
 
 import com.emce.brokage.auth.CustomerRepository;
-import com.emce.brokage.auth.UserService;
 import com.emce.brokage.auth.entity.Customer;
 import com.emce.brokage.auth.entity.Role;
 import org.springframework.boot.CommandLineRunner;

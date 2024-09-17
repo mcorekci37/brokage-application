@@ -32,6 +32,7 @@ public class OrderService {
     private final CustomerRepository customerRepository;
 
     @Transactional
+    @PreAuthorize("#request.customerId == authentication.principal.id")
     public OrderResponse createOrder(OrderRequest request) {
         Customer customer = customerRepository.findCustomerWithAssetsById(request.customerId()).
                 orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, request.customerId())));
@@ -94,6 +95,7 @@ public class OrderService {
     }
 
     @Transactional
+    @PreAuthorize("@customPermissionEvaluator.hasPermission(authentication, @orderRepository.findById(#orderId).orElse(null), 'cancel')")
     public OrderResponse cancelOrder(Integer orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(
                 () -> new OrderNotFoundException(String.format(ORDER_NOT_FOUND_MSG, orderId)));

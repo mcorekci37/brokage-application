@@ -11,6 +11,7 @@ import com.emce.brokage.balance.entity.TransactionStatus;
 import com.emce.brokage.balance.entity.TransactionType;
 import com.emce.brokage.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class BalanceService {
     private final AssetRepository assetRepository;
 
     @Transactional
+    @PreAuthorize("#request.customerId == authentication.principal.id")
     public BalanceResponse processTransaction(BalanceRequest request, TransactionType transactionType) {
         Customer customer = customerRepository.findCustomerWithAssetsById(request.customerId()).
                 orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, request.customerId())));
