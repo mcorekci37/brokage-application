@@ -2,6 +2,8 @@ package com.emce.brokage.balance.entity;
 
 import com.emce.brokage.auth.entity.Customer;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +29,8 @@ public class Asset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String assetName;
+    @Enumerated(EnumType.STRING)
+    private AssetType assetName;
     private BigDecimal size;
     private BigDecimal usableSize;
     @ManyToOne

@@ -6,11 +6,13 @@ import com.emce.brokage.balance.dto.BalanceRequest;
 import com.emce.brokage.balance.dto.BalanceResponse;
 import com.emce.brokage.balance.entity.AccountTransaction;
 import com.emce.brokage.balance.entity.Asset;
+import com.emce.brokage.balance.entity.AssetType;
 import com.emce.brokage.balance.entity.TransactionStatus;
 import com.emce.brokage.balance.entity.TransactionType;
 import com.emce.brokage.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -20,22 +22,22 @@ import static com.emce.brokage.common.Messages.*;
 @RequiredArgsConstructor
 public class BalanceService {
 
-    public static final String TRY = "TRY";
     private final TransactionRepository transactionRepository;
     private final CustomerRepository customerRepository;
     private final AssetRepository assetRepository;
 
+    @Transactional
     public BalanceResponse processTransaction(BalanceRequest request, TransactionType transactionType) {
         Customer customer = customerRepository.findCustomerWithAssetsById(request.customerId()).
                 orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, request.customerId())));
 
-        Optional<Asset> tryAssetOpt = customer.getAssets().stream().filter(asset -> asset.getAssetName().equals(TRY)).findFirst();
-        Asset tryAsset = tryAssetOpt.orElseGet(() -> Asset.builder()
-                .assetName(TRY)
-                .size(BigDecimal.ZERO)
-                .usableSize(BigDecimal.ZERO)
-                .customer(customer)
-                .build());
+        Asset tryAsset = customer.getAssets().stream().filter(asset -> asset.getAssetName().equals(AssetType.TRY)).findFirst()
+                .orElseGet(() -> Asset.builder()
+                        .assetName(AssetType.TRY)
+                        .size(BigDecimal.ZERO)
+                        .usableSize(BigDecimal.ZERO)
+                        .customer(customer)
+                        .build());
 
         BigDecimal previousAmount = tryAsset.getUsableSize();
         BigDecimal requestedAmount = request.amount();
