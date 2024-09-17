@@ -1,4 +1,4 @@
-package com.emce.brokage.entity;
+package com.emce.brokage.order.entity;
 
 public enum OrderStatus {
     PENDING,

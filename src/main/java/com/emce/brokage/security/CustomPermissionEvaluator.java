@@ -2,7 +2,7 @@ package com.emce.brokage.security;
 
 import com.emce.brokage.auth.UserService;
 import com.emce.brokage.auth.entity.Customer;
-import com.emce.brokage.entity.Order;
+import com.emce.brokage.order.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;

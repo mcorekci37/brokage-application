@@ -1,4 +1,4 @@
-package com.emce.brokage.balance.entity;
+package com.emce.brokage.asset.entity;
 
 public enum AssetType {
     TRY,
