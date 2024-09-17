@@ -1,0 +1,74 @@
+services:
+  postgres:
+    container_name: postgres_brokage
+    image: postgres
+    environment:
+      POSTGRES_USER: emce
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: brokage
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin_brokage
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin_brokage
+    ports:
+      - "9411:9411"
+    networks:
+      - spring
+
+  brokage-application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: emce/brokage-application:latest
+    container_name: brokage-application
+    ports:
+      - "8222:8222"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - spring
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      zipkin:
+        condition: service_started
+      postgres:
+        condition: service_started
+
+
+networks:
+  postgres:
+    name: postgres
+    driver: bridge
+  spring:
+    name: spring
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:

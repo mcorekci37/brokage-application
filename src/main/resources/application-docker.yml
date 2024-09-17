@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: brokage-application
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/brokage
+    username: emce
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+application:
+  security:
+    jwt:
+      secret-key: DEFINESOMESECRETKEYTOSINGTOKENFORSECURINGAPPLICATIONWITHJWTTOKEN
+      expiration: 86400000 # 1 day
+
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # only for testing purpose, switch back to 0.1 for production code
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+
+server:
+  port: 8222
