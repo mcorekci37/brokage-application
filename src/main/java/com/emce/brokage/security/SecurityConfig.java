@@ -2,6 +2,7 @@ package com.emce.brokage.security;
 
 import com.emce.brokage.auth.LogoutService;
 import com.emce.brokage.auth.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +29,13 @@ public class SecurityConfig {
     private final UserService userService;
     private final LogoutService logoutService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private static final String[] WHITE_LIST_URL = {"/api/v1/auth/**",
+    private static final String[] WHITE_LIST_URL = {
+            "/api/v1/auth/**",
             "/h2-console/**",
             "/api/v1/public/**"
+    };
+    public static final String[] ADMIN_PATHS = {
+            "/api/v1/order/match/**"
     };
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,6 +43,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(WHITE_LIST_URL).permitAll()
+                        .requestMatchers(ADMIN_PATHS).hasAuthority("ADMIN")  // Restrict access to matchOrder endpoint
                         .anyRequest().authenticated()
                 )
                 .headers((headers) -> headers
@@ -49,7 +55,10 @@ public class SecurityConfig {
                 .logout(logout ->
                         logout.logoutUrl("/api/v1/auth/logout")
                                 .addLogoutHandler(logoutService)
-                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                                .logoutSuccessHandler((request, response, authentication) -> {
+                                    SecurityContextHolder.clearContext();
+                                    response.setStatus(HttpServletResponse.SC_OK);
+                                })
                 )
         ;
         ;
