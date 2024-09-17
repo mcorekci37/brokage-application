@@ -1,4 +1,4 @@
-package com.emce.brokage.token;
+package com.emce.brokage.security.token;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

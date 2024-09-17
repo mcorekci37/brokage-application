@@ -1,7 +1,7 @@
 package com.emce.brokage.auth;
 
-import com.emce.brokage.token.Token;
-import com.emce.brokage.token.TokenRepository;
+import com.emce.brokage.security.token.Token;
+import com.emce.brokage.security.token.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

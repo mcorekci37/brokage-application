@@ -1,12 +1,13 @@
 package com.emce.brokage.balance;
 
+import com.emce.brokage.asset.AssetRepository;
 import com.emce.brokage.auth.CustomerRepository;
 import com.emce.brokage.auth.entity.Customer;
 import com.emce.brokage.balance.dto.BalanceRequest;
 import com.emce.brokage.balance.dto.BalanceResponse;
 import com.emce.brokage.balance.entity.AccountTransaction;
-import com.emce.brokage.balance.entity.Asset;
-import com.emce.brokage.balance.entity.AssetType;
+import com.emce.brokage.asset.entity.Asset;
+import com.emce.brokage.asset.entity.AssetType;
 import com.emce.brokage.balance.entity.TransactionStatus;
 import com.emce.brokage.balance.entity.TransactionType;
 import com.emce.brokage.exception.UserNotFoundException;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import static com.emce.brokage.common.Messages.*;
 
 @Service

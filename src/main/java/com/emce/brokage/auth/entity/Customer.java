@@ -1,7 +1,7 @@
 package com.emce.brokage.auth.entity;
 
-import com.emce.brokage.balance.entity.Asset;
-import com.emce.brokage.entity.Order;
+import com.emce.brokage.asset.entity.Asset;
+import com.emce.brokage.order.entity.Order;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -61,6 +61,10 @@ public class Customer implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public Customer(Integer customerId) {
+        this.id = customerId;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

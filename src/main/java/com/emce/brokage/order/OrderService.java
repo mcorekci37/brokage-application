@@ -2,12 +2,12 @@ package com.emce.brokage.order;
 
 import com.emce.brokage.auth.CustomerRepository;
 import com.emce.brokage.auth.entity.Customer;
-import com.emce.brokage.balance.AssetRepository;
-import com.emce.brokage.balance.entity.Asset;
-import com.emce.brokage.balance.entity.AssetType;
-import com.emce.brokage.entity.Order;
-import com.emce.brokage.entity.OrderSide;
-import com.emce.brokage.entity.OrderStatus;
+import com.emce.brokage.asset.AssetRepository;
+import com.emce.brokage.asset.entity.Asset;
+import com.emce.brokage.asset.entity.AssetType;
+import com.emce.brokage.order.entity.Order;
+import com.emce.brokage.order.entity.OrderSide;
+import com.emce.brokage.order.entity.OrderStatus;
 import com.emce.brokage.exception.AssetNotEnoughException;
 import com.emce.brokage.exception.AssetNotFoundException;
 import com.emce.brokage.exception.OrderNotFoundException;
@@ -16,11 +16,15 @@ import com.emce.brokage.exception.UserNotFoundException;
 import com.emce.brokage.order.dto.OrderRequest;
 import com.emce.brokage.order.dto.OrderResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import static com.emce.brokage.common.Messages.*;
 
 @Service
@@ -155,5 +159,41 @@ public class OrderService {
         orderRepository.save(order);
 
         return OrderResponse.fromEntity(order);
+    }
+
+    @PreAuthorize("#customerId == authentication.principal.id")
+    public Page<OrderResponse> listOrders(Integer customerId, AssetType assetName, OrderSide orderSide, OrderStatus status,
+            LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+
+        Specification<Order> spec = getSpesifications(customerId, assetName, orderSide, status, startDate, endDate);
+
+        return orderRepository.findAll(spec, pageable)
+                .map(order -> OrderResponse.fromEntity(order));
+    }
+
+    private static Specification<Order> getSpesifications(Integer customerId, AssetType assetName, OrderSide orderSide, OrderStatus status, LocalDateTime startDate, LocalDateTime endDate) {
+        Specification<Order> spec = Specification.where((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("customer").get("id"), customerId));
+
+        if (assetName != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("assetName"), assetName));
+        }
+
+        if (orderSide != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("orderSide"), orderSide));
+        }
+
+        if (status != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("status"), status));
+        }
+
+        if (startDate != null && endDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.between(root.get("createdAt"), startDate, endDate));
+        }
+        return spec;
     }
 }

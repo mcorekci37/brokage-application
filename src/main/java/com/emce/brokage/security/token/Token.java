@@ -1,4 +1,4 @@
-package com.emce.brokage.token;
+package com.emce.brokage.security.token;
 
 import com.emce.brokage.auth.entity.Customer;
 import jakarta.persistence.Column;

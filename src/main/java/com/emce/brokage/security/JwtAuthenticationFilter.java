@@ -1,7 +1,7 @@
 package com.emce.brokage.security;
 
 import com.emce.brokage.auth.UserService;
-import com.emce.brokage.token.TokenRepository;
+import com.emce.brokage.security.token.TokenRepository;
 import com.emce.brokage.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
