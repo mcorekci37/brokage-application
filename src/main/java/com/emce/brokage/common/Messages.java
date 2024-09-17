@@ -10,5 +10,9 @@ public class Messages {
     public static final String USER_ID_NOT_FOUND_MSG = "User not found with id %s";
     public static final String ERROR_AUTHENTICATION_FAILED = "Error: Authentication failed.";
     public static final String ERROR_USER_NOT_FOUND = "Error: User not found. JWT token is invalid.";
+    public static final String ORDER_NOT_FOUND_MSG = "Order not found with id %d";
+    public static final String ONLY_PENDING_ORDERS_CAN_BE_CANCELED_OR_MATCHED_MSG = "Only pending orders can be canceled or matched";
+    public static final String ASSET_S_HAS_NOT_ENOUGH_SIZE = "Asset %s has not enough size.";
+    public static final String ASSET_NOT_FOUND_FOR_ASSET_NAME_S_MSG = "Asset not found for assetName: %s";
 
 }

@@ -1,6 +1,7 @@
 package com.emce.brokage.entity;
 
 import com.emce.brokage.auth.entity.Customer;
+import com.emce.brokage.balance.entity.AssetType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -36,7 +37,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String assetName;
+    @Enumerated(EnumType.STRING)
+    private AssetType assetName;
     @Enumerated(EnumType.STRING)
     private OrderSide orderSide;
     private BigDecimal size;
