@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,6 +55,8 @@ public class Order {
     @Column(nullable = false)
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    @Version
+    private Integer version;
 
     @Override
     public boolean equals(Object o) {
