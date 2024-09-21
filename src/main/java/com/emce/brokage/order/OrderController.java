@@ -5,6 +5,8 @@ import com.emce.brokage.order.dto.OrderRequest;
 import com.emce.brokage.order.dto.OrderResponse;
 import com.emce.brokage.order.entity.OrderSide;
 import com.emce.brokage.order.entity.OrderStatus;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,21 +32,23 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest){
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest orderRequest){
         return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
     }
     @DeleteMapping("/cancel/{orderId}")
-    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable("orderId") Integer orderId) {
+    public ResponseEntity<OrderResponse> cancelOrder(
+            @PathVariable("orderId") @Positive(message = "Order ID must be a positive number") Integer orderId) {
         return ResponseEntity.ok(orderService.cancelOrder(orderId));
     }
     @PutMapping("/match/{orderId}")
-    public ResponseEntity<OrderResponse> matchOrder(@PathVariable("orderId") Integer orderId) {
+    public ResponseEntity<OrderResponse> matchOrder(
+            @PathVariable("orderId") @Positive(message = "Order ID must be a positive number") Integer orderId) {
         return ResponseEntity.ok(orderService.matchOrder(orderId));
     }
 
     @GetMapping("/list/{customerId}")
     public Page<OrderResponse> getOrders(
-            @PathVariable("customerId") Integer customerId,
+            @PathVariable("customerId") @Positive(message = "Customer ID must be a positive number") Integer customerId,
             @RequestParam(value = "assetName", required = false) AssetType assetName,
             @RequestParam(value = "orderSide", required = false) OrderSide orderSide,
             @RequestParam(value = "status", required = false) OrderStatus status,

@@ -3,6 +3,7 @@ package com.emce.brokage.auth;
 import com.emce.brokage.auth.dto.AuthRequest;
 import com.emce.brokage.auth.dto.AuthResponse;
 import com.emce.brokage.auth.dto.RegisterRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterRequest registerRequest){
         return new ResponseEntity<>(authService.register(registerRequest), HttpStatus.CREATED);
     }
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
     @PostMapping("/validate")

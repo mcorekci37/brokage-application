@@ -1,4 +1,11 @@
 package com.emce.brokage.auth.dto;
 
-public record AuthRequest(String email, String password) {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+
+public record AuthRequest(
+        @NotEmpty(message = "email should not be empty")
+        String email,
+        @NotEmpty(message = "password should not be empty")
+        String password) {
 }

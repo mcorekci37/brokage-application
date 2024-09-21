@@ -3,6 +3,7 @@ package com.emce.brokage.balance;
 import com.emce.brokage.balance.dto.BalanceRequest;
 import com.emce.brokage.balance.dto.BalanceResponse;
 import com.emce.brokage.balance.entity.TransactionType;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,11 +20,11 @@ public class BalanceController {
     private final BalanceService balanceService;
 
     @PostMapping("/deposit/{customerId}")
-    public ResponseEntity<BalanceResponse> deposit(@PathVariable("customerId") Integer customerId, @RequestBody BalanceRequest request){
+    public ResponseEntity<BalanceResponse> deposit(@PathVariable("customerId") Integer customerId, @Valid @RequestBody BalanceRequest request){
         return ResponseEntity.ok(balanceService.processTransaction(customerId, request, TransactionType.DEPOSIT));
     }
     @PostMapping("/withdraw/{customerId}")
-    public ResponseEntity<BalanceResponse> withdraw(@PathVariable("customerId") Integer customerId, @RequestBody BalanceRequest request){
+    public ResponseEntity<BalanceResponse> withdraw(@PathVariable("customerId") Integer customerId, @Valid @RequestBody BalanceRequest request){
         return ResponseEntity.ok(balanceService.processTransaction(customerId, request, TransactionType.WITHDRAW));
     }
 
