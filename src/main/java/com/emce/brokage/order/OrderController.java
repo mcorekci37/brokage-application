@@ -31,13 +31,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest){
-        try {
-            return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
-
-        }catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+        return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
     }
     @DeleteMapping("/cancel/{orderId}")
     public ResponseEntity<OrderResponse> cancelOrder(@PathVariable("orderId") Integer orderId) {
@@ -57,15 +51,6 @@ public class OrderController {
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             Pageable pageable) {
-
-        // Use default date range if not provided
-        if (startDate == null) {
-            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);  // Arbitrary default past date
-        }
-        if (endDate == null) {
-            endDate = LocalDateTime.now();  // Default to current date and time
-        }
-
         return orderService.listOrders(customerId, assetName, orderSide, status, startDate, endDate, pageable);
     }
 }

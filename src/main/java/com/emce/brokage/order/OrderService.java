@@ -193,6 +193,14 @@ public class OrderService {
         if (startDate != null && endDate != null) {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.between(root.get("createdAt"), startDate, endDate));
+        } else if (startDate!=null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), startDate));
+
+        } else if (endDate!=null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), endDate));
+
         }
         return spec;
     }

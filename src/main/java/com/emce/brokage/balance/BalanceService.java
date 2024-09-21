@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.security.InvalidParameterException;
 import static com.emce.brokage.common.Messages.*;
 
 @Service
@@ -29,7 +30,14 @@ public class BalanceService {
 
     @Transactional
     @PreAuthorize("#request.customerId == authentication.principal.id")
-    public BalanceResponse processTransaction(BalanceRequest request, TransactionType transactionType) {
+    public BalanceResponse processTransaction(Integer customerId, BalanceRequest request, TransactionType transactionType) {
+        if (!customerId.equals(request.customerId())){
+            throw new InvalidParameterException("customerId in path and body doesn't match");
+        }
+        if (request.transactionType()!= transactionType){
+            throw new InvalidParameterException(String.format("You can only %s from this endpoint", transactionType));
+        }
+
         Customer customer = customerRepository.findCustomerWithAssetsById(request.customerId()).
                 orElseThrow(() -> new UserNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, request.customerId())));
 
