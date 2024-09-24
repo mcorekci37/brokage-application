@@ -32,10 +32,10 @@ public class BalanceService {
     @PreAuthorize("#request.customerId == authentication.principal.id")
     public BalanceResponse processTransaction(Integer customerId, BalanceRequest request, TransactionType transactionType) {
         if (!customerId.equals(request.customerId())){
-            throw new InvalidParameterException("customerId in path and body doesn't match");
+            throw new InvalidParameterException(CUSTOMER_ID_IN_PATH_AND_BODY_NOT_MATCH_MSG);
         }
         if (request.transactionType()!= transactionType){
-            throw new InvalidParameterException(String.format("You can only %s from this endpoint", transactionType));
+            throw new InvalidParameterException(String.format(YOU_CAN_ONLY_S_FROM_THIS_ENDPOINT_MSG, transactionType));
         }
 
         Customer customer = customerRepository.findCustomerWithAssetsById(request.customerId()).

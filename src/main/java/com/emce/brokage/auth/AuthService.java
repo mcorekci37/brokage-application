@@ -56,12 +56,8 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthRequest request) throws AuthenticationException {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        }catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+
         var user = userService.loadUserByUsername(request.email());
 
         var jwtToken = jwtUtil.generateToken(user);
