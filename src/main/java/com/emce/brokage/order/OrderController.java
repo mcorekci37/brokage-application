@@ -5,6 +5,8 @@ import com.emce.brokage.order.dto.OrderRequest;
 import com.emce.brokage.order.dto.OrderResponse;
 import com.emce.brokage.order.entity.OrderSide;
 import com.emce.brokage.order.entity.OrderStatus;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,42 +32,29 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest){
-        try {
-            return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
-
-        }catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody OrderRequest orderRequest){
+        return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
     }
     @DeleteMapping("/cancel/{orderId}")
-    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable("orderId") Integer orderId) {
+    public ResponseEntity<OrderResponse> cancelOrder(
+            @PathVariable("orderId") @Positive(message = "Order ID must be a positive number") Integer orderId) {
         return ResponseEntity.ok(orderService.cancelOrder(orderId));
     }
     @PutMapping("/match/{orderId}")
-    public ResponseEntity<OrderResponse> matchOrder(@PathVariable("orderId") Integer orderId) {
+    public ResponseEntity<OrderResponse> matchOrder(
+            @PathVariable("orderId") @Positive(message = "Order ID must be a positive number") Integer orderId) {
         return ResponseEntity.ok(orderService.matchOrder(orderId));
     }
 
     @GetMapping("/list/{customerId}")
     public Page<OrderResponse> getOrders(
-            @PathVariable("customerId") Integer customerId,
+            @PathVariable("customerId") @Positive(message = "Customer ID must be a positive number") Integer customerId,
             @RequestParam(value = "assetName", required = false) AssetType assetName,
             @RequestParam(value = "orderSide", required = false) OrderSide orderSide,
             @RequestParam(value = "status", required = false) OrderStatus status,
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             Pageable pageable) {
-
-        // Use default date range if not provided
-        if (startDate == null) {
-            startDate = LocalDateTime.of(2000, 1, 1, 0, 0);  // Arbitrary default past date
-        }
-        if (endDate == null) {
-            endDate = LocalDateTime.now();  // Default to current date and time
-        }
-
         return orderService.listOrders(customerId, assetName, orderSide, status, startDate, endDate, pageable);
     }
 }
